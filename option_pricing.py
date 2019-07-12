@@ -1,54 +1,54 @@
 
 import math
 
-def american_call_option(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob):
+def american_call_option(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division):
     if k == no_division: 
         return max(0.0, (current_stock_price - strike_price))
 
-    up_american_call = american_call_option(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob)
-    down_american_call = american_call_option(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob)
-    notick_american_call = american_call_option(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob)
-
+    up_american_call = american_call_option(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob, no_division)
+    notick_american_call = american_call_option(k+1, i-1, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division)
+    down_american_call = american_call_option(k+1, i, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, no_division)
+    
     return max( (current_stock_price - strike_price), (uptick_prob * up_american_call + notick_prob*notick_american_call + down_prob * down_american_call ) / R )
 
 
-def american_put_option(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob):
+def american_put_option(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division):
     if k == no_division: 
         return max(0.0, (strike_price - current_stock_price))
 
-    up_american_call = american_put_option(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob)
-    down_american_call = american_put_option(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob)
-    notick_american_call = american_put_option(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob)
+    up_american_call = american_put_option(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob, no_division)
+    notick_american_call = american_put_option(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division)
+    down_american_call = american_put_option(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, no_division)
 
     return max( (strike_price - current_stock_price), (uptick_prob * up_american_call + notick_prob*notick_american_call + down_prob * down_american_call ) / R )
 
 
 
-def american_call_option_faster(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, data):
+def american_call_option_faster(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division, data):
     if (k, i) in data:
         return data[k,i]
     if k == no_division: 
         return max(0.0, (current_stock_price - strike_price))
     
-    data[k+1, i+1] = american_call_option_faster(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob, data)
-    data[k+1, i] = american_call_option_faster(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, data)
-    data[k+1, i-1] = american_call_option_faster(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, data)
+    data[k+1, i+1] = american_call_option_faster(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob,no_division, data)
+    data[k+1, i] = american_call_option_faster(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division, data)
+    data[k+1, i-1] = american_call_option_faster(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, no_division, data)
 
     data[k,i] =  max( (current_stock_price - strike_price), (uptick_prob * data[k+1, i+1] + notick_prob*data[k+1, i]  + down_prob * data[k+1, i-1] ) / R )
     return data[k,i]
 
 
 
-def american_put_option_faster(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, data):
+def american_put_option_faster(k, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division, data):
     if (k, i) in data:
         return data[k,i]
 
     if k == no_division: 
         return max(0.0, (strike_price - current_stock_price))
 
-    data[k+1, i+1] = american_put_option_faster(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob, data)
-    data[k+1, i] = american_put_option_faster(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, data)
-    data[k+1, i-1] = american_put_option_faster(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, data)
+    data[k+1, i+1] = american_put_option_faster(k+1, i+1 , current_stock_price*up_factor, strike_price, up_prob, down_prob, notick_prob, no_division, data)
+    data[k+1, i] = american_put_option_faster(k+1, i, current_stock_price, strike_price, up_prob, down_prob, notick_prob, no_division, data)
+    data[k+1, i-1] = american_put_option_faster(k+1, i-1, current_stock_price/up_factor, strike_price, up_prob, down_prob, notick_prob, no_division, data)
 
     data[k,i] =  max( (strike_price - current_stock_price ), (uptick_prob * data[k+1, i+1] + notick_prob*data[k+1, i]  + down_prob * data[k+1, i-1] ) / R )
     return data[k,i]
@@ -77,11 +77,11 @@ if __name__ == '__main__':
     print("Notick Probability = ", notick_prob)
 
     call_option_container = dict()
-    call_option = american_call_option_faster(0,0,stock_price,  strike_price, uptick_prob, downtick_prob, notick_prob,call_option_container);
+    call_option = american_call_option_faster(0,0,stock_price,  strike_price, uptick_prob, downtick_prob, notick_prob, no_division,call_option_container);
     print("call option ",call_option)
 
     put_option_container = dict()
-    put_option = american_put_option_faster(0,0,stock_price,  strike_price, uptick_prob, downtick_prob, notick_prob,put_option_container);
+    put_option = american_put_option_faster(0,0,stock_price,  strike_price, uptick_prob, downtick_prob, notick_prob, no_division,put_option_container);
     print("put option ",put_option)
 
     #call_option = american_call_option(0,0,stock_price,  strike_price, uptick_prob, downtick_prob, notick_prob);
