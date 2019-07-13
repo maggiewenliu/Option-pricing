@@ -33,7 +33,7 @@ def Monte_Carlo_Simulation(no_of_trials, T, r, S_0, vol, K, q):
 
     option_price = sim_option_price_sum/no_of_trials
     option_price_square = sim_option_price_square_sum / no_of_trials
-    standard_error = (1 / (no_of_trials - 1)) ** 0.5 * (option_price_square - option_price*option_price)
+    standard_error =  ( (1 / (no_of_trials - 1)) * (option_price_square - option_price*option_price) ) ** 0.5 
 
     upper_bound = option_price + 1.96*standard_error
     lower_bound = option_price - 1.96*standard_error
@@ -67,7 +67,7 @@ def Monte_Carlo_Simulation_faster(no_of_trials, T, r, S_0, vol, K, q):
 
     option_price = sim_option_price_sum/no_of_trials
     option_price_square = sim_option_price_square_sum / no_of_trials
-    standard_error = (1 / (no_of_trials - 1)) ** 0.5 * (option_price_square - option_price*option_price)
+    standard_error =  ( (1 / (no_of_trials - 1)) * (option_price_square - option_price*option_price) ) ** 0.5 
 
     print(option_price_square,standard_error )
 
