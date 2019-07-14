@@ -67,7 +67,7 @@ def Control_Variate(no_of_trials, T, r, S_0, vol, K, q,call_price):
     yb = y + b_har * ( mean - x) #yb 是numpy array, x也是numpy_array
 
     option_price = np.average(yb)
-    std_err = ( (1-pxy*pxy) * (var_y/ (no_of_trials -1)) ) **0.5
+    std_err = ( (1-pxy*pxy) * (var_y/ (no_of_trial)) ) **0.5
     abs_err = abs(option_price - call_price)
 
     print("Control Variate option price = {0}, standard_error = {1},  abs_err = {2} ".format(option_price,std_err,abs_err))
